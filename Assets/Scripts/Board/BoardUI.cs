@@ -35,31 +35,42 @@ public class BoardUI : MonoBehaviour,
     {
         Ray ray = playerCamera.ScreenPointToRay(eventData.position);
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        RaycastHit[] hits = Physics.RaycastAll(
+            ray,
+            100f,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Collide
+        );
+
+        foreach (RaycastHit hit in hits)
         {
             if (hit.collider.CompareTag("RepairTarget"))
             {
-                float distance = Vector3.Distance(
-                    player.position,
-                    hit.collider.transform.position
-                );
+                Window window =
+                    hit.collider.GetComponentInParent<Window>();
 
-                if (distance <= repairDistance)
+                if (window != null)
                 {
-                    Window window =
-                        hit.collider.GetComponentInParent<Window>();
+                    float distance = Vector3.Distance(
+                        player.position,
+                        window.transform.position
+                    );
 
-                    if (window != null)
+                    if (distance <= repairDistance)
                     {
                         if (window.currentBoards < window.maxBoards)
                         {
                             if (boardInventory.UseBoard())
                             {
                                 window.AddBoard();
+
+                                Debug.Log("Board Added!");
                             }
                         }
                     }
                 }
+
+                break;
             }
         }
 

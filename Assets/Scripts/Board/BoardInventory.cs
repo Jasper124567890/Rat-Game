@@ -23,7 +23,7 @@ public class BoardInventory : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray =
                 playerCamera.ScreenPointToRay(Input.mousePosition);

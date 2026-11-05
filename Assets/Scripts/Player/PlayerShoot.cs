@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class PlayerShoot : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class PlayerShoot : MonoBehaviour
 
     private void Update()
     {
+        // Don't shoot when clicking UI
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Input.GetMouseButton(1))
         {
             if (Input.GetMouseButtonDown(0))
@@ -48,7 +53,7 @@ public class PlayerShoot : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -71,7 +76,7 @@ public class PlayerShoot : MonoBehaviour
                     }
                 }
             }
-
+        }
     }
 
 
@@ -108,5 +113,4 @@ public class PlayerShoot : MonoBehaviour
             }
         }
     }
-}
 }

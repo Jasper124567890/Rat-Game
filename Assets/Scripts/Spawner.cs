@@ -7,6 +7,9 @@ public class Spawner : MonoBehaviour
     [Header("Enemy")]
     [SerializeField] private GameObject enemyPrefab;
 
+    [Header("Spawn Area")]
+    [SerializeField] private BoxCollider spawnArea;
+
     [Header("Wave Settings")]
     [SerializeField] private float spawnDelay = 0.5f;
     [SerializeField] private int ratsPerWaveMultiplier = 5;
@@ -44,14 +47,27 @@ public class Spawner : MonoBehaviour
     {
         for (int i = 0; i < ratsToSpawn; i++)
         {
+            Vector3 spawnPos = GetRandomPointInBox();
+
             Instantiate(
                 enemyPrefab,
-                transform.position,
+                spawnPos,
                 Quaternion.identity
             );
 
             yield return new WaitForSeconds(spawnDelay);
         }
+    }
+
+    private Vector3 GetRandomPointInBox()
+    {
+        Bounds bounds = spawnArea.bounds;
+
+        return new Vector3(
+            Random.Range(bounds.min.x, bounds.max.x),
+            transform.position.y,
+            Random.Range(bounds.min.z, bounds.max.z)
+        );
     }
 
     public void EnemyDestroyed()
