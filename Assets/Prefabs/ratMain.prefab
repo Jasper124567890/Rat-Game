@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1857281525299757802}
   - component: {fileID: 2564929433736759709}
   - component: {fileID: 5882772659102982748}
-  - component: {fileID: 1990597993350621427}
   m_Layer: 0
   m_Name: ratMain
   m_TagString: Rat
@@ -132,18 +131,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 16.09, y: 5.47, z: 0.64679146}
   m_Center: {x: 0, y: 0, z: 0.0024712086}
---- !u!114 &1990597993350621427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 285285033723039482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad67ca7e2969b914385b844caa7a913a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1001 &4494337092407015914
 PrefabInstance:
   m_ObjectHideFlags: 0

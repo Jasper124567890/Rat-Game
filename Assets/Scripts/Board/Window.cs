@@ -9,43 +9,43 @@ public class Window : MonoBehaviour
 
     public Collider enemyBlocker;
 
-    public int maxBoards = 4;
-    public int currentBoards = 4;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float currentHealth;
+
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
 
     private void Start()
     {
+        currentHealth = maxHealth;
         UpdateBoards();
     }
 
-    public void AddBoard()
+    public void TakeDamage(float damage)
     {
-        Debug.Log("Current Boards Before: " + currentBoards);
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        if (currentBoards < maxBoards)
-        {
-            currentBoards++;
-            Debug.Log("Current Boards After: " + currentBoards);
-
-            UpdateBoards();
-        }
+        UpdateBoards();
     }
 
-    public void RemoveBoard()
+    public void RepairHealth(float amount)
     {
-        if (currentBoards > 0)
-        {
-            currentBoards--;
-            UpdateBoards();
-        }
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        UpdateBoards();
     }
 
     private void UpdateBoards()
     {
-        board1.SetActive(currentBoards >= 1);
-        board2.SetActive(currentBoards >= 2);
-        board3.SetActive(currentBoards >= 3);
-        board4.SetActive(currentBoards >= 4);
+        float healthPercent = currentHealth / maxHealth;
 
-        enemyBlocker.enabled = currentBoards > 0;
+        board4.SetActive(healthPercent > 0.75f);
+        board3.SetActive(healthPercent > 0.50f);
+        board2.SetActive(healthPercent > 0.25f);
+        board1.SetActive(healthPercent > 0f);
+
+        enemyBlocker.enabled = currentHealth > 0;
     }
 }

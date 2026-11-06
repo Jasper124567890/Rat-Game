@@ -11,6 +11,8 @@ public class BoardUI : MonoBehaviour,
     public Transform player;
     public float repairDistance = 3f;
 
+    [SerializeField] private float repairAmount = 25f;
+
     private RectTransform rectTransform;
     private Vector2 startPosition;
 
@@ -58,13 +60,13 @@ public class BoardUI : MonoBehaviour,
 
                     if (distance <= repairDistance)
                     {
-                        if (window.currentBoards < window.maxBoards)
+                        if (window.CurrentHealth <= window.MaxHealth - repairAmount)
                         {
                             if (boardInventory.UseBoard())
                             {
-                                window.AddBoard();
+                                window.RepairHealth(repairAmount);
 
-                                Debug.Log("Board Added!");
+                                Debug.Log("Barricade Repaired");
                             }
                         }
                     }
