@@ -1,30 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using TMPro;
-using System.Collections;
 using UnityEngine.EventSystems;
 
 public class PlayerShoot : MonoBehaviour
 {
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float shootRange = 100f;
+
     public int gunDamage = 1;
 
-    [SerializeField] private int maxAmmo = 15;
+    [Header("Ammo")]
+    [SerializeField] private int maxAmmo = 9;
     private int currentAmmo;
 
     [SerializeField] private float ammoRefillDistance = 3f;
+
+    [Header("UI")]
     public TMP_Text ammoText;
-
-
-    void UpdateAmmoUI()
-    {
-        if (ammoText != null)
-        {
-            ammoText.text = "Ammo: " + currentAmmo + "/" + maxAmmo;
-        }
-    }
 
     private void Start()
     {
@@ -34,10 +27,10 @@ public class PlayerShoot : MonoBehaviour
 
     private void Update()
     {
-        // Don't shoot when clicking UI
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
+        // Shoot
         if (Input.GetMouseButton(1))
         {
             if (Input.GetMouseButtonDown(0))
@@ -53,6 +46,7 @@ public class PlayerShoot : MonoBehaviour
             }
         }
 
+        // Ammo refill
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
@@ -69,9 +63,11 @@ public class PlayerShoot : MonoBehaviour
                     if (distance <= ammoRefillDistance)
                     {
                         currentAmmo = maxAmmo;
+
                         UpdateAmmoUI();
 
                         Debug.Log("Ammo Refilled!");
+
                         return;
                     }
                 }
@@ -79,11 +75,9 @@ public class PlayerShoot : MonoBehaviour
         }
     }
 
-
-
-    void Shoot()
+    private void Shoot()
     {
-        Debug.Log("shoot");
+        Debug.Log("Shoot");
 
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -98,19 +92,81 @@ public class PlayerShoot : MonoBehaviour
 
         int layerMask = ~LayerMask.GetMask("Barricade");
 
-        if (Physics.Raycast(ray, out hit, shootRange, layerMask))
+        if (Physics.Raycast(
+            ray,
+            out hit,
+            shootRange,
+            layerMask))
         {
             if (hit.collider.CompareTag("Rat"))
             {
-                RatHealth Rat = hit.collider.GetComponent<RatHealth>();
+                // Normal Rat
+                RatHealth rat =
+                    hit.collider.GetComponent<RatHealth>();
 
-                if (Rat != null)
+                if (rat != null)
                 {
-                    Debug.Log("hit rat");
+                    rat.RatTakeDamage(gunDamage);
 
-                    Rat.RatTakeDamage(gunDamage);
+                    Debug.Log("Hit Rat");
+
+                    return;
+                }
+
+                // Rat King
+                RatKingHealth ratKing =
+                    hit.collider.GetComponent<RatKingHealth>();
+
+                if (ratKing != null)
+                {
+                    ratKing.RatTakeDamage(gunDamage);
+
+                    Debug.Log("Hit Rat King");
+
+                    return;
                 }
             }
         }
+    }
+
+    private void UpdateAmmoUI()
+    {
+        if (ammoText != null)
+        {
+            ammoText.text =
+                "Ammo: " +
+                currentAmmo +
+                "/" +
+                maxAmmo;
+        }
+    }
+
+    public void IncreaseMaxAmmo(int amount)
+    {
+        maxAmmo += amount;
+
+        currentAmmo += amount;
+
+        if (currentAmmo > maxAmmo)
+        {
+            currentAmmo = maxAmmo;
+        }
+
+        UpdateAmmoUI();
+
+        Debug.Log(
+            "Magazine Upgraded! Max Ammo: " +
+            maxAmmo
+        );
+    }
+
+    public int GetMaxAmmo()
+    {
+        return maxAmmo;
+    }
+
+    public int GetCurrentAmmo()
+    {
+        return currentAmmo;
     }
 }
